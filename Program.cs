@@ -1,12 +1,79 @@
 ﻿using System;
+using System.Threading.Tasks;
+using System.Text;
+using MySqlConnector;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.IO;
+
 
 namespace csharp_data
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            int i;
+            if ((args.Length < 2) || (!int.TryParse(args[0], out i)) || (!int.TryParse(args[1], out i)) || (int.Parse(args[0]) < 1) || (int.Parse(args[0]) > 5) || (int.Parse(args[1]) < 1) || (int.Parse(args[1]) > 4))
+            {
+                Console.WriteLine(@"To run this console application enter the following:
+                dotnet run <challenge #> <Test #>
+                Where <challenge #> is:
+                1 = File
+                2 = MySQL
+                3 = MongoDB
+                4 = Advanced
+                5 = Expert
+                and <Test #> is between 1 and 5.");
+
+            }
+            else
+            {
+                var showDisplay = true;
+                foreach (string arg in args)
+                {
+                    if (arg.ToLower() == "silent") showDisplay = false;
+                }
+                switch (int.Parse(args[0]))
+                {
+                    case 1: //File
+                        break;
+                    case 2: //MySQL
+                        switch (int.Parse(args[1]))
+                        {
+                            case 1: //Connection
+                                await TestRelational.RunTest(0, showDisplay);
+                                break;
+                            case 2: //Read
+                                await TestRelational.RunTest(1, showDisplay);
+                                await TestRelational.RunTest(2, showDisplay);
+                                break;
+                            case 3: //Modify
+                                break;
+                            case 4: //Exception handling
+                                break;
+
+                        }
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+
+                }
+
+            }
+        }
+        internal static string SaveResults(string name, object data)
+        {
+            var fileName = $"results.{name}.json";
+            var output = JsonSerializer.Serialize(data,options: new JsonSerializerOptions{
+                WriteIndented = true
+            });
+            File.WriteAllText(fileName,output);
+            return $"You can view the results in the file {fileName}.";
         }
     }
+
 }
