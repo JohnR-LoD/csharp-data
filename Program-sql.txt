@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Text;
+using MySqlConnector;
+using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.IO;
 
 
-namespace labfiles
+namespace csharp_data
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             int i;
             if ((args.Length < 2) || (!int.TryParse(args[0], out i)) || (!int.TryParse(args[1], out i)) || (int.Parse(args[0]) < 1) || (int.Parse(args[0]) > 5) || (int.Parse(args[1]) < 1) || (int.Parse(args[1]) > 4))
@@ -34,23 +38,30 @@ namespace labfiles
                 switch (int.Parse(args[0]))
                 {
                     case 1: //File
-                        switch (int.Parse(args[1]))
-                        {
-                            case 1: //Customer
-                                TestFile.RunTest(0, showDisplay);
-                                TestFile.RunTest(1, showDisplay);
-                                break;
-                            case 2: //Products
-                                TestFile.RunTest(2, showDisplay);
-                                TestFile.RunTest(3, showDisplay);
-                                break;
-                            case 3: //Orders
-                                TestFile.RunTest(4, showDisplay);
-                                TestFile.RunTest(5, showDisplay);
-                                break;
-                        }
                         break;
                     case 2: //MySQL
+                        switch (int.Parse(args[1]))
+                        {
+                            case 1: //Connection
+                                await TestRelational.RunTest(0, showDisplay);
+                                break;
+                            case 2: //Read
+                                await TestRelational.RunTest(1, showDisplay);
+                                await TestRelational.RunTest(2, showDisplay);
+                                break;
+                            case 3: //Modify
+                                await TestRelational.deleteProductLineAsync();
+                                await TestRelational.RunTest(3, showDisplay);
+                                await TestRelational.RunTest(4, showDisplay);
+                                await TestRelational.RunTest(5, showDisplay);
+                                break;
+                            case 4: //Exception handling
+                                await TestRelational.RunTest(6, showDisplay);
+                                await TestRelational.RunTest(7, showDisplay);
+                                await TestRelational.RunTest(8, showDisplay);
+                                break;
+
+                        }
                         break;
                     case 3:
                         break;
@@ -61,14 +72,13 @@ namespace labfiles
 
             }
         }
-        internal static string SaveResults(string name, object data, bool pretify = true)
+        internal static string SaveResults(string name, object data)
         {
             var fileName = $"results.{name}.json";
-            var output = JsonSerializer.Serialize(data, options: new JsonSerializerOptions
-            {
-                WriteIndented = pretify
+            var output = JsonSerializer.Serialize(data,options: new JsonSerializerOptions{
+                WriteIndented = true
             });
-            File.WriteAllText(fileName, output);
+            File.WriteAllText(fileName,output);
             return $"You can view the results in the file {fileName}.";
         }
     }
