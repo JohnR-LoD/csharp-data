@@ -267,10 +267,15 @@ namespace labfiles
         }
         static (int, string) TestDelete(){
             int result = 0;
-            string display = "";
+            string display = "You have deleted a document from the collection";
             var testObject = new MongoCode();
             var collection = testObject.GetCollection(host, port, database, TestMongo.collectionName);
             testObject.deleteCustomer(collection, newCustomerNumber);
+            var verify = getTestDocument(collection);
+            if(verify!=null) {
+                result = -1;
+                display = "You have not deleted the document from the collection.";
+            }
             return (result,display);
         }
        static (int, string) TestNoDocument(){
