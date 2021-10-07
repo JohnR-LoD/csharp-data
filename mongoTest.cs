@@ -306,7 +306,7 @@ namespace labfiles
                 display = "You did not insert a customer orders document.";
             } else {
                 result = 0;
-                display = $"You have successfully handled the xxx exception.";
+                display = $"You have successfully handled the MongoWriteException exception.";
             }
 
             return (result, display);
