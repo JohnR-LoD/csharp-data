@@ -70,7 +70,7 @@ namespace labfiles
                             var resultCode = -1;
                             var console = Console.Out;
                             Console.SetOut(new StreamWriter(File.OpenWrite(Path.GetTempFileName())));
-                            if (int.Parse(args[1]) <= 5)
+                            if (int.Parse(args[1]) <= 6)
                             {
                                 resultCode = await TestRelational.RunTest(int.Parse(args[1]) - 1, false);
                             }
