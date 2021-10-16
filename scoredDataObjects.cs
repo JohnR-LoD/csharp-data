@@ -36,4 +36,13 @@ namespace labfiles
         public int quantityOrdered { get; set; }
         public decimal lineTotal { get; set; }
     }
+    public class CustomerContact {
+        public string customerName { get; set; }
+        public string phone { get; set; }
+    }
+
+    public class CustomerReport {
+        public CustomerContact contact { get; set; }
+        public List<Order> orders { get; set; }
+    }
 }

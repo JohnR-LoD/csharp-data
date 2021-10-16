@@ -58,21 +58,29 @@ namespace labfiles
                                     await TestRelational.RunTest(4, showDisplay);
                                     await TestRelational.RunTest(5, showDisplay);
                                     break;
+                                case 3: //Exception handling
+                                    TestMongo.RunTest(0, showDisplay);
+                                    TestMongo.RunTest(1, showDisplay);
+                                    break;
                                 case 4: //Exception handling
-                                    await TestRelational.RunTest(6, showDisplay);
-                                    await TestRelational.RunTest(7, showDisplay);
-                                    await TestRelational.RunTest(8, showDisplay);
+                                    TestReport.RunTest(0, showDisplay);
+                                    TestReport.RunTest(1, showDisplay);
                                     break;
                             }
                         }
                         else
                         {
                             var resultCode = -1;
+                            int test = int.Parse(args[1]);
                             var console = Console.Out;
                             Console.SetOut(new StreamWriter(File.OpenWrite(Path.GetTempFileName())));
-                            if (int.Parse(args[1]) <= 6)
+                            if (test <= 6)
                             {
-                                resultCode = await TestRelational.RunTest(int.Parse(args[1]) - 1, false);
+                                resultCode = await TestRelational.RunTest(test - 1, false);
+                            } else if (test <=8) {
+                                resultCode = TestMongo.RunTest(test-7,false);
+                            } else if (test <= 10) {
+                                resultCode =  TestReport.RunTest(test-9,false);
                             }
                             Console.SetOut(console);
                             Console.WriteLine(resultCode);
