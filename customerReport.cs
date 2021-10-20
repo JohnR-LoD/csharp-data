@@ -15,7 +15,7 @@ namespace labfiles
             await Task.CompletedTask;
             throw new NotImplementedException();
         }
-        public IMongoCollection<CustomerOrder> GetCollection(string host, string port, string database, string collection)
+        public IMongoCollection<CustomerOrder> getCollection(string host, string port, string database, string collection)
         {
             throw new NotImplementedException();
         }
@@ -32,7 +32,7 @@ namespace labfiles
             throw new NotImplementedException();
         }
 
-        public async Task<CustomerReport> GetCustomerReport(MySqlConnection connection, IMongoCollection<CustomerOrder> collection, int customerNumber)
+        public async Task<CustomerReport> getCustomerReport(MySqlConnection connection, IMongoCollection<CustomerOrder> collection, int customerNumber)
         {
             await Task.CompletedTask;
             throw new NotImplementedException();

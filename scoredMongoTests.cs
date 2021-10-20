@@ -55,7 +55,7 @@ namespace labfiles
             int result = 0;
             string display = "";
             var testObject = new MongoOrders();
-            var collection = testObject.GetCollection(Settings.host, Settings.mongoPort.ToString(), Settings.database, Settings.collectionName);
+            var collection = testObject.getCollection(Settings.host, Settings.mongoPort.ToString(), Settings.database, Settings.collectionName);
             if (collection.CollectionNamespace.CollectionName == Settings.collectionName)
             {
                 result = 0;
@@ -74,9 +74,9 @@ namespace labfiles
             int result = 0;
             string display = "";
             var testObject = new MongoOrders();
-            var collection = testObject.GetCollection(Settings.host, Settings.mongoPort.ToString(), Settings.database, Settings.collectionName);
+            var collection = testObject.getCollection(Settings.host, Settings.mongoPort.ToString(), Settings.database, Settings.collectionName);
             clearDocuments(collection);
-            var documents = testObject.ImportDocuments(collection, Settings.dataPath);
+            var documents = testObject.importDocuments(collection, Settings.dataPath);
             if (documents == 0)
             {
                 result = -1;

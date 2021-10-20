@@ -6,13 +6,13 @@ namespace labfiles
 {
     class MongoOrders
     {
-        public IMongoCollection<CustomerOrder> GetCollection(string host, string port, string database, string collection)
+        public IMongoCollection<CustomerOrder> getCollection(string host, string port, string database, string collection)
         {
             throw new NotImplementedException();
         }
 
 
-        public int ImportDocuments(IMongoCollection<CustomerOrder> collection, string dataPath)
+        public int importDocuments(IMongoCollection<CustomerOrder> collection, string dataPath)
         {
             throw new NotImplementedException();
         }

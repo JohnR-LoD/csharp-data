@@ -46,8 +46,8 @@ namespace labfiles
             string display = "";
             var testObject = new customerOrdersReport();
             var connection = testObject.getConnection(Settings.host, Settings.mysqlPort, Settings.database, Settings.user, Settings.password).GetAwaiter().GetResult();
-            var collection = testObject.GetCollection(Settings.host, Settings.mongoPort.ToString(), Settings.database, Settings.collectionName);
-            var report = testObject.GetCustomerReport(connection, collection, 131).GetAwaiter().GetResult();
+            var collection = testObject.getCollection(Settings.host, Settings.mongoPort.ToString(), Settings.database, Settings.collectionName);
+            var report = testObject.getCustomerReport(connection, collection, 131).GetAwaiter().GetResult();
 
             if((report == null) || (report.contact==null)) {
                 result = -1;
@@ -68,8 +68,8 @@ namespace labfiles
             string display = "";
             var testObject = new customerOrdersReport();
             var connection = testObject.getConnection(Settings.host, Settings.mysqlPort, Settings.database, Settings.user, Settings.password).GetAwaiter().GetResult();
-            var collection = testObject.GetCollection(Settings.host, Settings.mongoPort.ToString(), Settings.database, Settings.collectionName);
-            var report = testObject.GetCustomerReport(connection, collection, 131).GetAwaiter().GetResult();
+            var collection = testObject.getCollection(Settings.host, Settings.mongoPort.ToString(), Settings.database, Settings.collectionName);
+            var report = testObject.getCustomerReport(connection, collection, 131).GetAwaiter().GetResult();
 
             if((report == null) || (report.orders==null)) {
                 result = -1;
