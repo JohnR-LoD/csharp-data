@@ -1,15 +1,40 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>csharp_data</RootNamespace>
+    <RootNamespace>labfiles</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="advanced\Program-scored.cs" />
+    <None Include="file\Program-file.cs" />
+    <None Remove="mongo\**" />
+    <None Remove="mysql\**" />
+    <None Remove="advanced\**" />
+    <None Remove="scored\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="mongodb.driver" Version="2.13.2" />
     <PackageReference Include="MySqlConnector" Version="1.3.13" />
     <PackageReference Include="newtonsoft.json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="mongo\**" />
+    <Compile Remove="mysql\**" />
+    <Compile Remove="advanced\**" />
+    <Compile Remove="file\scoredReportTest.cs" />
+    <Compile Remove="scored\**" />
+    <Compile Remove="Program.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="mongo\**" />
+    <EmbeddedResource Remove="mysql\**" />
+    <EmbeddedResource Remove="advanced\**" />
+    <EmbeddedResource Remove="scored\**" />
   </ItemGroup>
 
 </Project>

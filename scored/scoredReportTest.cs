@@ -1,11 +1,10 @@
-using System.Collections.Generic;
 using System;
-using MongoDB.Driver;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
+using labfiles.mysql;
+using Settings = labfiles.Shared.Settings;
 
-namespace labfiles
+namespace labfiles.file
 {
     class TestReport
     {

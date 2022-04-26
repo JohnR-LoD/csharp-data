@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.Text.Json;
 using System.IO;
+using System.Text.Json;
 
-
-namespace labfiles
+namespace labfiles.mongo
 {
     class Program
     {
         static void Main(string[] args)
         {
             int i;
-            if ((args.Length < 2) || (!int.TryParse(args[0], out i)) || (!int.TryParse(args[1], out i)) || (int.Parse(args[0]) < 1) || (int.Parse(args[0]) > 5) || (int.Parse(args[1]) < 1) || (int.Parse(args[1]) > 4))
+            if ((args.Length < 2) || (!int.TryParse(args[0], out i)) || (!int.TryParse(args[1], out i)) || (int.Parse(args[0]) < 1) || (int.Parse(args[0]) > 5) || (int.Parse(args[1]) < 1) || (int.Parse(args[1]) > 5))
             {
                 Console.WriteLine(@"To run this console application enter the following:
                 dotnet run <challenge #> <Test #>
@@ -34,25 +32,31 @@ namespace labfiles
                 switch (int.Parse(args[0]))
                 {
                     case 1: //File
-                        switch (int.Parse(args[1]))
-                        {
-                            case 1: //Customer
-                                TestFile.RunTest(0, showDisplay);
-                                TestFile.RunTest(1, showDisplay);
-                                break;
-                            case 2: //Products
-                                TestFile.RunTest(2, showDisplay);
-                                TestFile.RunTest(3, showDisplay);
-                                break;
-                            case 3: //Orders
-                                TestFile.RunTest(4, showDisplay);
-                                TestFile.RunTest(5, showDisplay);
-                                break;
-                        }
                         break;
                     case 2: //MySQL
                         break;
-                    case 3:
+                    case 3: //Mongo
+                        switch(int.Parse(args[1])) {
+                            case 1://Connection
+                                TestMongo.RunTest(0,showDisplay);
+                            break;
+                            case 2: 
+                                TestMongo.RunTest(1,showDisplay);
+                            break;
+                            case 3:
+                                TestMongo.RunTest(2,showDisplay);
+                                TestMongo.RunTest(3,showDisplay);
+                            break;
+                            case 4:
+                                TestMongo.RunTest(4,showDisplay);
+                                TestMongo.RunTest(5,showDisplay);
+                                TestMongo.RunTest(6,showDisplay);
+                            break;
+                            case 5:
+                                TestMongo.RunTest(7,showDisplay);
+                                TestMongo.RunTest(8,showDisplay);
+                            break;
+                        }
                         break;
                     case 4:
                         break;

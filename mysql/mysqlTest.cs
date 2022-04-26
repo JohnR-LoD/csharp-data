@@ -1,17 +1,12 @@
 using System;
-using System.Threading.Tasks;
-using System.Text;
-using MySqlConnector;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.IO;
+using System.Threading.Tasks;
 
-namespace csharp_data
+namespace labfiles.mysql
 {
     delegate Task<(int, string)> TestFunction();
 
-    class TestRelational
+    partial class TestRelational
     {
 
 

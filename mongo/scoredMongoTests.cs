@@ -1,22 +1,22 @@
-using System.Collections.Generic;
 using System;
-using MongoDB.Driver;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
+using labfiles.Shared;
+using MongoDB.Driver;
 
-namespace labfiles
+namespace labfiles.mongo
 {
-    class TestMongo
+    partial class TestMongo
     {
         private delegate (int, string) TestFunction();
 
-        private static void clearDocuments(IMongoCollection<CustomerOrder> collection)
+        private static void clearDocuments(IMongoCollection<Shared.CustomerOrder> collection)
         {
-            collection.DeleteMany<CustomerOrder>(co => co._id != "deleteme");
+            collection.DeleteMany<Shared.CustomerOrder>(co => co._id != "deleteme");
 
         }
 
-        private static List<CustomerOrder> GetOrders(IMongoCollection<CustomerOrder> collection)
+        private static List<Shared.CustomerOrder> GetOrders(IMongoCollection<Shared.CustomerOrder> collection)
         {
             return collection.Find(co => co._id != "dm").ToList();
         }

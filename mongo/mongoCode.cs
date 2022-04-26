@@ -1,7 +1,8 @@
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 
-namespace labfiles {
+namespace labfiles.mongo {
     public class MongoCode {
         public IMongoCollection<CustomerOrder> GetCollection(string host, string port, string database, string collection) {
             throw new NotImplementedException();
@@ -36,12 +37,10 @@ namespace labfiles {
         public int customerNumber { get; set; }
         public List<Order> orders { get; set; }
 
-        public CustomerOrder(){
-            orders = new List<Order>();
-
-        }
+        public CustomerOrder() => orders = new List<Order>();
 
     }
+
     public class Order {
         public int orderNumber { get; set; }
         public DateTime orderDate { get; set; }
