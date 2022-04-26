@@ -1,16 +1,13 @@
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System;
-using System.IO;
-using System.Text.Json;
+using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Driver;
 
-namespace labfiles
+namespace labfiles.mongo
 {
     delegate (int, string) TestFunction();
 
-    internal class TestMongo
+    internal partial class TestMongo
     {
         internal const string dataPath = "d:\\labfiles\\orders";
         internal const string host = "localhost";
@@ -22,11 +19,11 @@ namespace labfiles
         //Test setup
 
         const int newCustomerNumber = 1000000;
-        static CustomerOrder newCustomerOrder
+        static Shared.CustomerOrder newCustomerOrder
         {
             get
             {
-                var newCO = new CustomerOrder
+                var newCO = new Shared.CustomerOrder
                 {
                     _id = newCustomerNumber.ToString(),
                     customerNumber = newCustomerNumber
@@ -41,7 +38,7 @@ namespace labfiles
                     requiredDate = DateTime.Parse("2021-05-20"),
                     shippedDate = DateTime.Parse("2021-05-20"),
                 };
-                order.details.Add(new OrderDetail
+                order.details.Add(new Shared.OrderDetail
                 {
                     orderLineNumber = 1,
                     productName = "1966 Shelby Cobra 427 S/C",
@@ -67,7 +64,7 @@ namespace labfiles
                     requiredDate = DateTime.Parse("2021-05-20"),
                     shippedDate = DateTime.Parse("2021-05-20"),
                 };
-                order.details.Add(new OrderDetail
+                order.details.Add(new Shared.OrderDetail
                 {
                     orderLineNumber = 1,
                     productName = "1966 Shelby Cobra 427 S/C",
@@ -80,16 +77,16 @@ namespace labfiles
             }
         }
 
-        private static void deleteTestDocument(IMongoCollection<CustomerOrder> collection) {
-            collection.DeleteOne<CustomerOrder>(co => co._id == newCustomerNumber.ToString());
+        private static void deleteTestDocument(IMongoCollection<Shared.CustomerOrder> collection) {
+            collection.DeleteOne<Shared.CustomerOrder>(co => co._id == newCustomerNumber.ToString());
         }
-        private static CustomerOrder getTestDocument(IMongoCollection<CustomerOrder> collection) {
-            return collection.Find<CustomerOrder>(co => co._id == newCustomerNumber.ToString()).FirstOrDefault();
+        private static Shared.CustomerOrder getTestDocument(IMongoCollection<Shared.CustomerOrder> collection) {
+            return collection.Find<Shared.CustomerOrder>(co => co._id == newCustomerNumber.ToString()).FirstOrDefault();
         }
 
-        internal static void clearDocuments(IMongoCollection<CustomerOrder> collection)
+        internal static void clearDocuments(IMongoCollection<Shared.CustomerOrder> collection)
         {
-            collection.DeleteMany<CustomerOrder>(co => co._id != "deleteme");
+            collection.DeleteMany<Shared.CustomerOrder>(co => co._id != "deleteme");
         }
 
         internal static int RunTest(int testNumber, bool showDisplay)

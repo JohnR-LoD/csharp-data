@@ -1,18 +1,19 @@
 using System;
-using System.Threading.Tasks;
-using System.IO;
-using System.Text.Json;
-using System.Linq;
-using MySqlConnector;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using labfiles.Shared;
+using MySqlConnector;
 
-
-namespace labfiles
+namespace labfiles.mysql
 {
-    public class TestRelational
+    public partial class TestRelational
     {
 
         #region Test Values
+        
         private static int newOrderNumber = 1000000;
         private static int testCustomerNumber = 240;
         private static int testOrderNumber = 10232;
@@ -53,6 +54,7 @@ namespace labfiles
                 return order;
             }
         }
+        
         #endregion
 
 
@@ -120,7 +122,7 @@ namespace labfiles
 
         public delegate Task<(int,string)> TestFunction();
 
-        internal static async Task<int> RunTest(int testNumber, bool showDisplay)
+        internal static int RunTest(int testNumber, bool showDisplay)
         {
             int result = 0;
             var testTitle = "";
@@ -135,7 +137,7 @@ namespace labfiles
             try
             {
                 testTitle = tests[testNumber].Item1;
-                (result, display) = await tests[testNumber].Item2();
+                (result, display) = tests[testNumber].Item2();
                 if (showDisplay) Console.WriteLine($"{testTitle}:\t{display}");
             }
             catch (MySqlConnector.MySqlException exSql)
@@ -158,8 +160,8 @@ namespace labfiles
             int result = 0;
             string display = "";
             var testObject = new MySqlCode();
-            var conn = await testObject.getConnection(Settings.host, Settings.mysqlPort, Settings.database, Settings.user, Settings.password);
-            if (conn.Database == Settings.database)
+            var conn = await testObject.getConnection(Shared.Settings.host, Shared.Settings.mysqlPort, Shared.Settings.database, Shared.Settings.user, Shared.Settings.password);
+            if (conn.Database == Shared.Settings.database)
             {
                 result = 0;
                 display = "You have successfully connected to the database.";
@@ -176,7 +178,7 @@ namespace labfiles
             int result = 0;
             string display = "";
             var testObject = new MySqlCode();
-            var conn = await testObject.getConnection(Settings.host, Settings.mysqlPort, Settings.database, Settings.user, Settings.password);
+            var conn = await testObject.getConnection(Shared.Settings.host, Shared.Settings.mysqlPort, Shared.Settings.database, Shared.Settings.user, Shared.Settings.password);
             clearTestOrder(conn);
             var rowCount = await testObject.insertOrder(conn, testOrder);
             var testResult = getTestOrder(conn);
@@ -197,7 +199,7 @@ namespace labfiles
             int result = 0;
             string display = "";
             var testObject = new MySqlCode();
-            var conn = await testObject.getConnection(Settings.host, Settings.mysqlPort, Settings.database, Settings.user, Settings.password);
+            var conn = await testObject.getConnection(Shared.Settings.host, Shared.Settings.mysqlPort, Shared.Settings.database, Shared.Settings.user, Shared.Settings.password);
             clearTestOrder(conn);
             var orderRowCount = await testObject.insertOrder(conn, testOrder);
             var rowCount = 0;
@@ -229,7 +231,7 @@ namespace labfiles
             int result = 0;
             string display = "";
             var testObject = new MySqlCode();
-            var conn = await testObject.getConnection(Settings.host, Settings.mysqlPort, Settings.database, Settings.user, Settings.password);
+            var conn = await testObject.getConnection(Shared.Settings.host, Shared.Settings.mysqlPort, Shared.Settings.database, Shared.Settings.user, Shared.Settings.password);
             clearTestOrder(conn);
             var rowCount = await testObject.insertOrder(conn, testOrder);
             var duplicateResultCode = await testObject.insertOrder(conn, testOrder);
@@ -253,13 +255,13 @@ namespace labfiles
             int result = 0;
             string display = "";
             var testObject = new MySqlCode();
-            if(Directory.Exists(Settings.dataPath)) {
-                Directory.Delete(Settings.dataPath,true);
+            if(Directory.Exists(Shared.Settings.dataPath)) {
+                Directory.Delete(Shared.Settings.dataPath,true);
             }
-            Directory.CreateDirectory(Settings.dataPath);
-            var conn = await testObject.getConnection(Settings.host, Settings.mysqlPort, Settings.database, Settings.user, Settings.password);
-            await testObject.exportCustomerOrders(conn,Settings.dataPath);
-            if(Directory.GetFiles(Settings.dataPath).Length==98) {
+            Directory.CreateDirectory(Shared.Settings.dataPath);
+            var conn = await testObject.getConnection(Shared.Settings.host, Shared.Settings.mysqlPort, Shared.Settings.database, Shared.Settings.user, Shared.Settings.password);
+            await testObject.exportCustomerOrders(conn,Shared.Settings.dataPath);
+            if(Directory.GetFiles(Shared.Settings.dataPath).Length==98) {
                 result = 0;
                 display = "You have exported the correct number of customer orders.";
             } else {
@@ -278,13 +280,13 @@ namespace labfiles
             int result = 0;
             string display = "";
             var testObject = new MySqlCode();
-            if(Directory.Exists(Settings.dataPath)) {
-                Directory.Delete(Settings.dataPath,true);
+            if(Directory.Exists(Shared.Settings.dataPath)) {
+                Directory.Delete(Shared.Settings.dataPath,true);
             }
-            Directory.CreateDirectory(Settings.dataPath);
-            var conn = await testObject.getConnection(Settings.host, Settings.mysqlPort, Settings.database, Settings.user, Settings.password);
-            await testObject.exportCustomerOrders(conn,Settings.dataPath);
-            string filePath = $"{Settings.dataPath}\\{testCustomerNumber}.json";
+            Directory.CreateDirectory(Shared.Settings.dataPath);
+            var conn = await testObject.getConnection(Shared.Settings.host, Shared.Settings.mysqlPort, Shared.Settings.database, Shared.Settings.user, Shared.Settings.password);
+            await testObject.exportCustomerOrders(conn,Shared.Settings.dataPath);
+            string filePath = $"{Shared.Settings.dataPath}\\{testCustomerNumber}.json";
             if(!File.Exists(filePath)) {
                 result = -1;
                 display = "You did not export the correct files.";

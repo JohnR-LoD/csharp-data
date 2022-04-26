@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.Text;
-using MySqlConnector;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
 
-
-namespace csharp_data
+namespace labfiles.mysql
 {
     class Program
     {

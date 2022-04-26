@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace labfiles
+namespace labfiles.Shared
 {
     public class CustomerOrder {
         public string _id { get; set; }

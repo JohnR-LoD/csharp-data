@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.Text;
-using MySqlConnector;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.IO;
-
+using System.Text.Json;
+using System.Threading.Tasks;
+using labfiles.file;
 
 namespace labfiles
 {
@@ -14,10 +10,18 @@ namespace labfiles
     {
         static async Task Main(string[] args)
         {
-            int i;
-            if ((args.Length < 2) || (!int.TryParse(args[0], out i)) || (!int.TryParse(args[1], out i)) || (int.Parse(args[0]) < 1) || (int.Parse(args[0]) > 5) || (int.Parse(args[1]) < 1) || (int.Parse(args[1]) > 10))
+            if (
+                (args.Length < 2) ||
+                (!int.TryParse(args[0], out int i)) ||
+                (!int.TryParse(args[1], out i)) ||
+                (int.Parse(args[0]) < 1) ||
+                (int.Parse(args[0]) > 5) ||
+                (int.Parse(args[1]) < 1) ||
+                (int.Parse(args[1]) > 10)
+            )
             {
-                Console.WriteLine(@"To run this console application enter the following:
+                Console
+                    .WriteLine(@"To run this console application enter the following:
                 dotnet run <challenge #> <Test #>
                 Where <challenge #> is:
                 1 = File
@@ -26,7 +30,6 @@ namespace labfiles
                 4 = Advanced
                 5 = Expert
                 and <Test #> is between 1 and 10.");
-
             }
             else
             {
@@ -35,33 +38,30 @@ namespace labfiles
                 {
                     if (arg.ToLower() == "silent") showDisplay = false;
                 }
+
                 switch (int.Parse(args[0]))
                 {
                     case 1: //File
-                        break;
-                    case 2: //MySQL
-                        break;
-                    case 3:
-                        break;
-                    case 4: //advanced
                         if (showDisplay)
                         {
                             switch (int.Parse(args[1]))
                             {
-                                case 1: //Connect and modify relational data
-                                    await TestRelational.RunTest(0, showDisplay);
-                                    await TestRelational.RunTest(1, showDisplay);
-                                    await TestRelational.RunTest(2, showDisplay);
-                                    await TestRelational.RunTest(3, showDisplay);
+                                case 1: //read a record from a JSON file.
+                                     TestFile.RunTest(0, showDisplay);
                                     break;
                                 case 2: //Export relational data
-                                    await TestRelational.RunTest(4, showDisplay);
-                                    await TestRelational.RunTest(5, showDisplay);
+                                    await TestRelational
+                                        .RunTest(4, showDisplay);
+                                    await TestRelational
+                                        .RunTest(5, showDisplay);
                                     break;
                                 case 4: //Exception handling
-                                    await TestRelational.RunTest(6, showDisplay);
-                                    await TestRelational.RunTest(7, showDisplay);
-                                    await TestRelational.RunTest(8, showDisplay);
+                                    await TestRelational
+                                        .RunTest(6, showDisplay);
+                                    await TestRelational
+                                        .RunTest(7, showDisplay);
+                                    await TestRelational
+                                        .RunTest(8, showDisplay);
                                     break;
                             }
                         }
@@ -69,20 +69,78 @@ namespace labfiles
                         {
                             var resultCode = -1;
                             var console = Console.Out;
-                            Console.SetOut(new StreamWriter(File.OpenWrite(Path.GetTempFileName())));
+                            Console
+                                .SetOut(new StreamWriter(File
+                                    .OpenWrite(Path.GetTempFileName())));
                             if (int.Parse(args[1]) <= 5)
                             {
-                                resultCode = await TestRelational.RunTest(int.Parse(args[1]) - 1, false);
+                                resultCode =
+                                    await TestFile.RunTest(int.Parse(args[1]) - 1, false);
                             }
+
                             Console.SetOut(console);
                             Console.WriteLine(resultCode);
                         }
+
                         break;
+                    case 2: //MySQL
+                        break;
+                    case 3:
+                        break;
+                  /*  case 4: //advanced
+                        if (showDisplay)
+                        {
+                            switch (int.Parse(args[1]))
+                            {
+                                case 1: //Connect and modify relational data
+                                    await TestRelational
+                                        .RunTest(0, showDisplay);
+                                    await TestRelational
+                                        .RunTest(1, showDisplay);
+                                    await TestRelational
+                                        .RunTest(2, showDisplay);
+                                    await TestRelational
+                                        .RunTest(3, showDisplay);
+                                    break;
+                                case 2: //Export relational data
+                                    await TestRelational
+                                        .RunTest(4, showDisplay);
+                                    await TestRelational
+                                        .RunTest(5, showDisplay);
+                                    break;
+                                case 4: //Exception handling
+                                    await TestRelational
+                                        .RunTest(6, showDisplay);
+                                    await TestRelational
+                                        .RunTest(7, showDisplay);
+                                    await TestRelational
+                                        .RunTest(8, showDisplay);
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            var resultCode = -1;
+                            var console = Console.Out;
+                            Console
+                                .SetOut(new StreamWriter(File
+                                    .OpenWrite(Path.GetTempFileName())));
+                            if (int.Parse(args[1]) <= 5)
+                            {
+                                resultCode =
+                                    await TestRelational
+                                        .RunTest(int.Parse(args[1]) - 1, false);
+                            }
 
+                            Console.SetOut(console);
+                            Console.WriteLine(resultCode);
+                        }
+
+                        break;*/
                 }
-
             }
         }
+
         internal static string SaveResults(string name, object data)
         {
             var fileName = $"results.{name}.json";
@@ -94,5 +152,4 @@ namespace labfiles
             return $"You can view the results in the file {fileName}.";
         }
     }
-
 }

@@ -1,6 +1,6 @@
-namespace labfiles
+namespace labfiles.Shared
 {
-    class Settings
+    internal static class Settings
     {
         public const string host = "localhost";
         public const string mysqlPort = "3306";

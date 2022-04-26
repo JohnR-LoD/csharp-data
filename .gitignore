@@ -139,3 +139,7 @@ $RECYCLE.BIN/
 _NCrunch*
 # Local History for Visual Studio Code
 .history/
+
+# Rider and IntelliJ files
+.idea/
+/csharp-data.sln.DotSettings

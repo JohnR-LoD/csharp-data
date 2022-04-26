@@ -1,8 +1,9 @@
 using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using MySqlConnector;
 
-namespace csharp_data
+namespace labfiles.mysql
 {
     public class mysqlCode
     {
