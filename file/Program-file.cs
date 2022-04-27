@@ -6,76 +6,49 @@ namespace labfiles.file
 {
     class Program
     {
-        static void Main(string[] args)
+       
+        private static int Main(string[] args)
         {
-            int i;
-            if ((args.Length < 2) || (!int.TryParse(args[0], out i)) || (!int.TryParse(args[1], out i)) || (int.Parse(args[0]) < 1) || (int.Parse(args[0]) > 5) || (int.Parse(args[1]) < 1) || (int.Parse(args[1]) > 4))
+            if ( args.Length < 1 || args.Length > 2 || !int.TryParse(args[0], out var i) || i < 1 || i > TestFile.NumberOfTests )
             {
                 Console.WriteLine(@"To run this console application enter the following:
-                dotnet run <challenge #> <Test #>
-                Where <challenge #> is:
-                1 = File
-                2 = MySQL
-                3 = MongoDB
-                4 = Advanced
-                5 = Expert
-                and <Test #> is between 1 and 5.");
-
+                \n\n dotnet run <test#>
+                \n\n Where <test#> is between 1 and 5.");
+                return 1;
             }
-            else
+
+            var showDisplay = args.Length == 2 && args[1].Contains("silent", StringComparison.OrdinalIgnoreCase);
+                
+            var testFile = new TestFile();
+            var result = testFile.RunTest(i);
+                
+            var fileName = SaveResults(result.title, result.data, true);
+
+            if (showDisplay)
             {
-                var showDisplay = true;
-                
-                foreach (string arg in args)
+                Console.WriteLine(result.message);
+
+                if (fileName != null)
                 {
-                    if (arg.ToLower() == "silent") showDisplay = false;
+                    Console.WriteLine($"You can view the results in the file {fileName}.");
                 }
-
-                var testFile = new TestFile();
-                
-                // Note: Only one RunTest at a time is ever called.
-                switch (int.Parse(args[0]))
-                {
-                    case 1: //Filer
-                        switch (int.Parse(args[1]))
-                        {
-                            case 1: //Customer
-                                testFile.RunTest(0, showDisplay); //readCustomerFile
-                                break;
-                            case 2: //Products
-                                testFile.RunTest(1, showDisplay); //readCustomerData
-                                testFile.RunTest(2, showDisplay); //readProductCount
-                                testFile.RunTest(3, showDisplay); //readProductData
-                                break;
-                            case 3: //Orders
-                                testFile.RunTest(4, showDisplay); //monthlyOrders
-                                testFile.RunTest(5, showDisplay); //customerReport
-                                break;
-                        }
-                        break;
-                    case 2: //MySQL
-                        break;
-                    case 3: //Mongo
-                        break;
-                    case 4: //Advanced
-                        break;
-
-                    
-                    
-                }
-
             }
+
+            // Flip "success" to represent an exit code.
+            return result.success ? 0 : 1;
         }
-        internal static string SaveResults(string name, object data, bool prettify = true)
+
+        private static string SaveResults(string title, object data, bool prettify)
         {
-            var fileName = $"results.{name}.json";
+            if (data == null) return null;
+            
+            var fileName = $"results.{title}.json";
             var output = JsonSerializer.Serialize(data, options: new JsonSerializerOptions
             {
                 WriteIndented = prettify
             });
             File.WriteAllText(fileName, output);
-            return $"You can view the results in the file {fileName}.";
+            return fileName;
         }
     }
-
 }

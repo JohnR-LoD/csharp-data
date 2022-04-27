@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace labfiles.file
 {
-    internal delegate (int, string) TestFunction();
+    internal delegate (bool success, string message, object data) TestFunction();
 
     internal class TestFile
     {
@@ -15,19 +15,18 @@ namespace labfiles.file
         private const string productsFile = "products.json";
         private const string orderFileSearch = "*.csv";
         private const string orderFileName = "2003-10.csv";
-
+        internal const int NumberOfTests = 6;
         private static Customer testCustomer
         {
             get
             {
                 var customerData = File.ReadAllText($"{dataPath}\\{customerFile}");
                 var customer = JsonSerializer.Deserialize<Customer>(customerData);
-                if (customer == null) return new Customer(); 
-                
+                if (customer == null) return new Customer();
+
                 customer.processingCenter = "LODS";
                 return customer;
             }
-
         }
 
         private static Product testProduct
@@ -39,188 +38,145 @@ namespace labfiles.file
             }
         }
 
-        internal int RunTest(int testNumber, bool showDisplay)
+        internal (bool success, string title, string message, object data) RunTest(int testNumber)
         {
-            int result = 0;
-            var testTitle = string.Empty;
-
-            var tests = new List<(string, TestFunction)>
+            var tests = new List<(string title, TestFunction testFunction)>
             {
-                ("readCustomerFile", TestReadCustomerFromFile),
-                ("readCustomerData", TestReadCustomerProcessingCenter),
-                ("readProductCount", TestReadProductCount),
-                ("readProductData", TestReadProductData),
-                ("monthlyOrders", TestMonthlyOrders),
-                ("customerReport", TestCustomerReport)
+                ("1.1 Read data from a JSON file", TestReadCustomerFromFile),
+                ("2.1 Modify an object on read", TestReadCustomerProcessingCenter),
+                ("2.2 Generate a list of objects", TestReadProductCount),
+                ("2.3 Parse substrings to create a list", TestReadProductData),
+                ("3.1 Filter and sort lists", TestMonthlyOrders),
+                ("3.2 Slice Lists", TestCustomerReport)
             };
+
+            var title = tests[testNumber].title;
 
             try
             {
-                string display;
-                
-                testTitle = tests[testNumber].Item1;
-                
-                (result, display) = tests[testNumber].Item2();
-                
-                if (showDisplay) Console.WriteLine($"{testTitle}:\t{display}");
+                var result = tests[testNumber].testFunction();
+                return (result.success, title, $"{title}:\tResult = {result.message}", result.data );
             }
             catch (Exception ex)
             {
-                result = -1;
-                if (showDisplay) Console.WriteLine($"{testTitle}:\tResult = ERROR - {ex.Message}");
+                return (success: false, title, message: $"{title} \n Your code threw an exception. \n Exception: {ex.Message}", null );
             }
-            return result;
         }
 
-        private (int, string) TestReadCustomerFromFile()
+        private (bool success, string message, object data) TestReadCustomerFromFile()
         {
-            var result = -1;
-            string display;
-            var testObject = new FileCode();
-            
-            var customer = testObject.readCustomer(dataPath, customerFile);
-            
-            Console.WriteLine(customer.customerName);
-            Console.WriteLine(JsonSerializer.Serialize(customer));
-            
-            if (customer.customerName != testCustomer.customerName)
-            {
-                display = "Your code did not return the correct data.";
-            }
-            else
-            {
-                result = 0;
-                display = "You have successfully read in the customer data.";
-            }
-            return (result, display);
-        }
-        private (int, string) TestReadCustomerProcessingCenter()
-        {
-            var result = -1;
-            var display = "";
             var testObject = new FileCode();
             var customer = testObject.readCustomer(dataPath, customerFile);
-            if (customer == null)
-            {
-                display = "Your code did not return a customer.";
-            }
-            else if (customer.processingCenter != "LODS")
-            {
-                display = "Your code did not return the correct processing center data.";
-            }
-            else
-            {
-                result = 0;
-                display = $"You have successfully set the processing center data. {Program.SaveResults("customer", customer)}";
-            }
-            return (result, display);
+
+            if (customer == null) return (false, "Your code did not return a customer.", null);
+
+            var customerString = $"{customer.customerName} \n {JsonSerializer.Serialize(customer)} \n";
+
+            return customer.customerName == testCustomer.customerName
+                ? (true, $"{customerString} \n You have successfully read in the customer data.", customer)
+                : (false, $"{customerString} \n Your code did not return the correct data.", customer);
         }
-        private (int, string) TestReadProductCount()
+
+        private (bool success, string message, object data) TestReadCustomerProcessingCenter()
         {
-            var result = -1;
-            var display = "";
+            var testObject = new FileCode();
+            var customer = testObject.readCustomer(dataPath, customerFile);
+
+            if (customer == null) return (false, "Your code did not return a customer object", null);
+
+            return customer.processingCenter == "LODS"
+                ? (true, "You have successfully set the processing center data.", customer)
+                : (false, "Your code did not return the correct processing center data.", customer);
+        }
+
+        private (bool success, string message, object data) TestReadProductCount()
+        {
             var testObject = new FileCode();
             var products = testObject.readProducts(dataPath, productsFile);
-            if (products == null)
-            {
-                display = "Your code did not return a List of Product objects";
-            }
-            else if (products.Count != 110)
-            {
-                display = "Your code did not return the correct number of Product objects";
-            }
-            else
-            {
-                result = 0;
-                display = $"You have successfully returned the correct number of product objects.";
-                
-            }
-            return (result, display);
+
+            if (products == null) return (false, "Your code did not return a List of Product objects", null);
+            
+            return products.Count == 110
+                ? (true, "You have successfully returned the correct number of product objects.", products)
+                : (false, "Your code did not return the correct number of Product objects", products);
         }
-        private (int, string) TestReadProductData()
+
+        private (bool success, string message, object data) TestReadProductData()
         {
-            var result = -1;
-            var display = "";
             var testObject = new FileCode();
             var products = testObject.readProducts(dataPath, productsFile);
-            if (products == null)
-            {
-                display = "Your code did not return a List of Product objects";
-            }
-            else if (products[0].msrp != testProduct.msrp)
-            {
-                display = "Your code did not return the correct Product data";
-            }
-            else
-            {
-                result = 0;
-                display = $"You have successfully returned product data. {Program.SaveResults("products", products)}";
-            }
-            return (result, display);
+
+            if (products == null) return (false, "Your code did not return a List of Product objects", null);
+
+            return products[0].msrp == testProduct.msrp
+                ? (true, "You have successfully returned product data.", products)
+                : (false, "Your code did not return the correct Product data", products);
         }
-        private (int, string) TestMonthlyOrders()
+
+        private (bool success, string message, object data) TestMonthlyOrders()
         {
-            int result = -1;
-            var display = "";
             var fileName = $"{dataPath}\\{orderFileName}";
             var orderData = File.ReadAllLines(fileName);
-            var testData = new List<Order>();
-            foreach(var orderLine in orderData) {
-                var order = orderLine.Split(",");
-                testData.Add(new Order
-                {
-                    orderNumber = int.Parse(order[0]),
-                    orderDate = System.DateTime.Parse(order[1]),
-                    status = order[2],
-                    customerNumber = int.Parse(order[3]),
-                    orderTotal = decimal.Parse(order[4])
-                });
-            }
-            var testTotal = testData.Where(o => o.status == "Shipped").OrderByDescending(o => o.orderTotal).Take(5).Last().orderTotal;
+
+            var testData = orderData.Select(o => o.Split(","))
+                .Select(order =>
+                    new Order
+                    {
+                        orderNumber = int.Parse(order[0]),
+                        orderDate = DateTime.Parse(order[1]),
+                        status = order[2],
+                        customerNumber = int.Parse(order[3]),
+                        orderTotal = decimal.Parse(order[4])
+                    })
+                .ToList();
+
+            var testTotal = testData.Where(o => o.status == "Shipped")
+                                    .OrderByDescending(o => o.orderTotal)
+                                    .Take(5).Last().orderTotal;
 
             var testObject = new FileCode();
             var orderResults = testObject.processMonthlyOrders(orderData);
-            if(orderResults==null) {
-                
-                display = "Your code did not return any orders.";
-            } else if (orderResults.Last().orderTotal!=testTotal) {
-                
-                display = "Your code did not return the correct data.";
+            
+            if (orderResults == null) return (false, "Your code did not return any orders.", null);
 
-            } else {
-                result = 0;
-                display = $"Your code returned the correct order results. {Program.SaveResults("Customer Orders",orderResults)}";
-            }
-
-            return (result, display);
+            return orderResults.Last().orderTotal == testTotal 
+                ? (true, "Your code returned the correct order results.", orderResults) 
+                : (false, "Your code did not return the correct data.", orderResults);
         }
-        
-        private (int, string) TestCustomerReport()
-        {
-            var result = -1;
-            var display = "";
+
+        private (bool success, string message, object data) TestCustomerReport()
+        { 
             var fileName = $"{dataPath}\\{orderFileName}";
             var orderData = File.ReadAllLines(fileName);
-            var testData = new List<Order>();
+            
+            var testData = orderData.Select(o => o.Split(","))
+                .Select(order =>
+                    new Order
+                    {
+                        orderNumber = int.Parse(order[0]),
+                        orderDate = DateTime.Parse(order[1]),
+                        status = order[2],
+                        customerNumber = int.Parse(order[3]),
+                        orderTotal = decimal.Parse(order[4])
+                    })
+                .ToList();
+            
             var testObject = new FileCode();
-            var allOrderResults = testObject.generateOrdersReport(dataPath,orderFileSearch);
-            if (allOrderResults==null || allOrderResults.Count == 0)
+            var allOrderResults = testObject.generateOrdersReport(dataPath, orderFileSearch);
+            
+            if (allOrderResults == null || allOrderResults.Count == 0 )
             {
-                display = "Your code did not return any data";
-                return (result, display);
-            } else if (allOrderResults.Count != 143)
-            {
-                display = $"Your code did not return the correct number of orders. The correct number is 143 and your code returned {allOrderResults.Count }.";
-                return (result, display);
-            } else if (allOrderResults[30].customerNumber!=382)
-            {
-                display = $"Your code did not return the correct order data.";
-                return (result, display);
-            } else {
-                result = 0;
-                display = $"You code returned the correct order data. {Program.SaveResults("report",allOrderResults, false)}";
-                return (result, display);
+                return (false, "Your code did not return any data.", null);
             }
+            
+            if (allOrderResults.Count != testData.Count)
+            {
+                return (false, $"Your code did not return the correct number of orders. The correct number is {testData.Count} and your code returned {allOrderResults.Count}.", ( testData, allOrderResults ) );
+            }
+            
+            return allOrderResults[30].customerNumber != testData[30].customerNumber 
+                ? (true, "Your code did not return the correct order data.", ( testData, allOrderResults )) 
+                : (true, "You code returned the correct order data.", allOrderResults );
         }
     }
 }
