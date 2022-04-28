@@ -15,6 +15,7 @@ namespace csharp_data.file
         private const string productsFile = "products.json";
         private const string orderFileSearch = "*.csv";
         private const string orderFileName = "2003-10.csv";
+      
         internal const int NumberOfTests = 6;
         private static Customer testCustomer
         {
@@ -27,6 +28,7 @@ namespace csharp_data.file
                 customer.processingCenter = "LODS";
                 return customer;
             }
+
         }
 
         private static Product testProduct

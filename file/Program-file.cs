@@ -5,8 +5,7 @@ using System.Text.Json;
 namespace labfiles.file
 {
     class Program
-    {
-       
+    {       
         private static int Main(string[] args)
         {
             if ( args.Length < 1 || args.Length > 2 || !int.TryParse(args[0], out var i) || i < 1 || i > TestFile.NumberOfTests )
@@ -43,12 +42,11 @@ namespace labfiles.file
             if (data == null) return null;
             
             var fileName = $"results.{title}.json";
+
             var output = JsonSerializer.Serialize(data, options: new JsonSerializerOptions
             {
                 WriteIndented = prettify
             });
             File.WriteAllText(fileName, output);
+
             return fileName;
-        }
-    }
-}
