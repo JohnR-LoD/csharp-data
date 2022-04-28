@@ -1,4 +1,4 @@
-namespace labfiles.Shared
+namespace csharp_data
 {
     internal static class Settings
     {

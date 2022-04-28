@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 
-namespace labfiles.file
+namespace csharp_data.file
 {
     internal delegate (bool success, string message, object data) TestFunction();
 
@@ -55,11 +55,11 @@ namespace labfiles.file
             try
             {
                 var result = tests[testNumber].testFunction();
-                return (result.success, title, $"{title}:\tResult = {result.message}", result.data );
+                return (result.success, title, result.message, result.data );
             }
             catch (Exception ex)
             {
-                return (success: false, title, message: $"{title} \n Your code threw an exception. \n Exception: {ex.Message}", null );
+                return (success: false, title, message: $"{title} \n Your code threw an exception. \n Exception: {ex.Message}", data: null );
             }
         }
 
@@ -147,20 +147,7 @@ namespace labfiles.file
         private (bool success, string message, object data) TestCustomerReport()
         { 
             var fileName = $"{dataPath}\\{orderFileName}";
-            var orderData = File.ReadAllLines(fileName);
-            
-            var testData = orderData.Select(o => o.Split(","))
-                .Select(order =>
-                    new Order
-                    {
-                        orderNumber = int.Parse(order[0]),
-                        orderDate = DateTime.Parse(order[1]),
-                        status = order[2],
-                        customerNumber = int.Parse(order[3]),
-                        orderTotal = decimal.Parse(order[4])
-                    })
-                .ToList();
-            
+
             var testObject = new FileCode();
             var allOrderResults = testObject.generateOrdersReport(dataPath, orderFileSearch);
             
@@ -169,13 +156,13 @@ namespace labfiles.file
                 return (false, "Your code did not return any data.", null);
             }
             
-            if (allOrderResults.Count != testData.Count)
+            if (allOrderResults.Count != 143)
             {
-                return (false, $"Your code did not return the correct number of orders. The correct number is {testData.Count} and your code returned {allOrderResults.Count}.", ( testData, allOrderResults ) );
+                return (false, $"Your code did not return the correct number of orders. The correct number is 143 and your code returned {allOrderResults.Count}.", allOrderResults );
             }
             
-            return allOrderResults[30].customerNumber != testData[30].customerNumber 
-                ? (true, "Your code did not return the correct order data.", ( testData, allOrderResults )) 
+            return allOrderResults[30].customerNumber != 382 
+                ? (true, "Your code did not return the correct order data.", allOrderResults )
                 : (true, "You code returned the correct order data.", allOrderResults );
         }
     }

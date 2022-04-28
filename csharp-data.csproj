@@ -27,7 +27,6 @@
     <Compile Remove="advanced\**" />
     <Compile Remove="file\scoredReportTest.cs" />
     <Compile Remove="scored\**" />
-    <Compile Remove="Program.cs" />
   </ItemGroup>
 
   <ItemGroup>
