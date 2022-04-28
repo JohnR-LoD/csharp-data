@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <None Include="advanced\Program-scored.cs" />
-    <None Include="file\Program-file.cs" />
     <None Remove="mongo\**" />
     <None Remove="mysql\**" />
     <None Remove="advanced\**" />
@@ -27,7 +26,7 @@
     <Compile Remove="advanced\**" />
     <Compile Remove="file\scoredReportTest.cs" />
     <Compile Remove="scored\**" />
-    <Compile Remove="Program.cs" 
+    <Compile Remove="Program.cs" />
   </ItemGroup>
 
   <ItemGroup>

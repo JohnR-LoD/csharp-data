@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.Json;
 
-namespace csharp_data.file
+namespace labfiles.file
 {
     class Program
     {

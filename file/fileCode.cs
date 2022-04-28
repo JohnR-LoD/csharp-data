@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 
-namespace csharp_data.file
+namespace labfiles.file
 {
     public class FileCode
     {
