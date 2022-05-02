@@ -7,75 +7,58 @@ namespace labfiles.mysql
 {
     class Program
     {
-        static async Task Main(string[] args)
+        private static async Task<int> Main(string[] args)
         {
-            int i;
-            if ((args.Length < 2) || (!int.TryParse(args[0], out i)) || (!int.TryParse(args[1], out i)) || (int.Parse(args[0]) < 1) || (int.Parse(args[0]) > 5) || (int.Parse(args[1]) < 1) || (int.Parse(args[1]) > 4))
+            if ( args.Length < 1 || args.Length > 2 || !int.TryParse(args[0], out var i) || i < 1 || i > MySqlTest.NumberOfTests )
             {
-                Console.WriteLine(@"To run this console application enter the following:
-                dotnet run <challenge #> <Test #>
-                Where <challenge #> is:
-                1 = File
-                2 = MySQL
-                3 = MongoDB
-                4 = Advanced
-                5 = Expert
-                and <Test #> is between 1 and 5.");
-
+                Console.WriteLine($@"To run this console application enter the following:
+                \n\n dotnet run <test#>
+                \n\n Where <test#> is between 1 and {MySqlTest.NumberOfTests}.");
+                return 1;
             }
-            else
-            {
-                var showDisplay = true;
-                foreach (string arg in args)
+
+            var showDisplay = args.Length == 2 && args[1].Contains("verbose", StringComparison.OrdinalIgnoreCase);
+                
+            var testFile = new MySqlTest();
+            
+            // Test number arg starts at 1.
+            var result = await testFile.RunTest(i - 1);
+                
+            var fileName = SaveResults(result.title, result.data, true);
+
+            if (showDisplay) {
+                Console.WriteLine(result.message);
+
+                if (fileName != null)
                 {
-                    if (arg.ToLower() == "silent") showDisplay = false;
+                    Console.WriteLine($"You can view the results in the file {fileName}.");
                 }
-                switch (int.Parse(args[0]))
-                {
-                    case 1: //File
-                        break;
-                    case 2: //MySQL
-                        switch (int.Parse(args[1]))
-                        {
-                            case 1: //Connection
-                                await TestRelational.RunTest(0, showDisplay);
-                                break;
-                            case 2: //Read
-                                await TestRelational.RunTest(1, showDisplay);
-                                await TestRelational.RunTest(2, showDisplay);
-                                break;
-                            case 3: //Modify
-                                await TestRelational.deleteProductLineAsync();
-                                await TestRelational.RunTest(3, showDisplay);
-                                await TestRelational.RunTest(4, showDisplay);
-                                await TestRelational.RunTest(5, showDisplay);
-                                break;
-                            case 4: //Exception handling
-                                await TestRelational.RunTest(6, showDisplay);
-                                await TestRelational.RunTest(7, showDisplay);
-                                await TestRelational.RunTest(8, showDisplay);
-                                break;
-
-                        }
-                        break;
-                    case 3:
-                        break;
-                    case 4:
-                        break;
-
-                }
-
             }
+
+            // Flip "success" to represent an exit code.
+            return result.success ? 0 : 1;
         }
-        internal static string SaveResults(string name, object data)
+
+        internal static string SaveResults(string title, object data, bool prettify)
         {
-            var fileName = $"results.{name}.json";
-            var output = JsonSerializer.Serialize(data,options: new JsonSerializerOptions{
-                WriteIndented = true
-            });
-            File.WriteAllText(fileName,output);
-            return $"You can view the results in the file {fileName}.";
+            if ( data == null ) return null;
+            
+            string output;
+            try
+            {
+                output = JsonSerializer.Serialize(data,
+                    options: new JsonSerializerOptions { WriteIndented = prettify });
+            }
+            catch
+            {
+                output = "There was an error deserializing your data."; 
+            }
+            
+            var fileName = $"D:\\labfiles\\{title}.json";
+            
+            File.WriteAllText(fileName, output);
+            
+            return fileName;
         }
     }
-
 }
